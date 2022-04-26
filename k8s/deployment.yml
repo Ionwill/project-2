@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ninjas-deployment
+  namespace: team-ccc
+  labels:
+    name: ninjas
+spec:
+  replicas: 3
+  minReadySeconds: 5
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: ninjas
+  template:
+    metadata:
+      labels:
+        app: ninjas
+    spec:
+      containers:
+      - name: ninjas-container
+        image: axpazmino/project2:v1
+        ports:
+        - containerPort: 8080
+        env:
+          - name: DB_URL
+            value: jdbc:postgresql://postgres-service:5432/postgres
+          - name: DB_USER
+            value: postgresDB
+          - name: DB_PASS
+            value: basketball
+          # could add an env var for spring profile value: prod
+      - name: promtail-container
+        image: grafana/promtail
+        args:
+        - -config.file=/etc/promtail/promtail.yml
+        volumeMounts:
+        - name: logs
+          mountPath: /logs
+        - name: promtail-config
+          mountPath: /etc/promtail
+      volumes:
+        - name: logs
+          emptyDir: {}
+        - name: promtail-config
+          configMap:
+            name: promtail-config
+
+          

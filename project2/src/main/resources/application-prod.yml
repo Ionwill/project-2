@@ -1,0 +1,14 @@
+spring: 
+  datasource: 
+#    url: ${DB_URL}
+#    username: ${DB_USERNAME}
+#    password: ${DB_PASS}
+      url: jdbc:postgresql://postgresdb-1.cokq2ji1eim5.us-east-1.rds.amazonaws.com:5432/postgres
+      username: postgresDB
+      password: basketball
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+     ddl-auto: update
